@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Chuma installer — downloads prebuilt binary, no Rust required
+# ChumaClaw installer — downloads prebuilt binary, no Rust required
 set -euo pipefail
 
 BINARY="chuma"
@@ -15,7 +15,7 @@ RESET="\033[0m"
 
 echo -e "${CYAN}${BOLD}"
 echo "╔══════════════════════════════════╗"
-echo "║   Chuma ⚡  Installer        ║"
+echo "║   ChumaClaw ⚡  Installer        ║"
 echo "╚══════════════════════════════════╝"
 echo -e "${RESET}"
 
@@ -113,12 +113,30 @@ fi
 
 # ── done ───────────────────────────────────────────────────────────────────
 INSTALLED_VERSION="$("$DEST" --version 2>/dev/null || echo "unknown")"
+PURPLE="\033[35m"
+DIM="\033[2m"
+
 echo ""
-echo -e "${GREEN}${BOLD}Successfully installed Chuma!${RESET}"
-echo -e "  Add ${INSTALL_DIR} to your PATH if it's not already there."
-echo -e "  Run it with: ${BOLD}${DEST}${RESET}"
+echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════════╗${RESET}"
+echo -e "${GREEN}${BOLD}║       ✓  ChumaClaw installed successfully!           ║${RESET}"
+echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════════╝${RESET}"
 echo ""
-echo "Quick start:"
-echo "  chuma config set anthropic YOUR_API_KEY"
-echo "  chuma run \"hello world\""
-echo "  chuma status"
+echo -e "  ${DIM}Version ${RESET}   ${BOLD}${INSTALLED_VERSION}${RESET}"
+echo -e "  ${DIM}Location${RESET}   ${CYAN}${DEST}${RESET}"
+echo ""
+echo -e "${PURPLE}${BOLD}  ──────────────────  Quick Start  ──────────────────${RESET}"
+echo ""
+echo -e "  ${YELLOW}#${RESET} Set your API key"
+echo -e "  ${BOLD}chuma config set anthropic YOUR_API_KEY${RESET}"
+echo ""
+echo -e "  ${YELLOW}#${RESET} Run a prompt"
+echo -e "  ${BOLD}chuma run \"explain recursion in one paragraph\"${RESET}"
+echo ""
+echo -e "  ${YELLOW}#${RESET} Launch an agent"
+echo -e "  ${BOLD}chuma agent \"write and test a Python web scraper\"${RESET}"
+echo ""
+echo -e "  ${YELLOW}#${RESET} Free local models — no API key needed"
+echo -e "  ${BOLD}chuma agent --provider ollama --model gemma4:31b-cloud${RESET}"
+echo ""
+echo -e "  ${DIM}Docs & releases → https://github.com/chumaAI/chuma-code${RESET}"
+echo ""
