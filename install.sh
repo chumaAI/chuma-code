@@ -143,9 +143,7 @@ echo -e "${PURPLE}${BOLD}  ─────────────────�
 echo ""
 echo -e "  ${YELLOW}#${RESET} Set your API key"
 echo -e "  ${BOLD}chuma config set anthropic YOUR_API_KEY${RESET}"
-echo ""
-echo -e "  ${YELLOW}#${RESET} Run a prompt"
-echo -e "  ${BOLD}chuma run \"explain recursion in one paragraph\"${RESET}"
+
 echo ""
 echo -e "  ${YELLOW}#${RESET} Launch an agent"
 echo -e "  ${BOLD}chuma agent \"write and test a Python web scraper\"${RESET}"
