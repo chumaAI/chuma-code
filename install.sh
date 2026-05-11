@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ChumaClaw installer — downloads prebuilt binary, no Rust required
+# Chuma installer — downloads prebuilt binary, no Rust required
 set -euo pipefail
 
 BINARY="chuma"
@@ -15,7 +15,7 @@ RESET="\033[0m"
 
 echo -e "${CYAN}${BOLD}"
 echo "╔══════════════════════════════════╗"
-echo "║   ChumaClaw ⚡  Installer        ║"
+echo "║   Chuma ⚡  Installer        ║"
 echo "╚══════════════════════════════════╝"
 echo -e "${RESET}"
 
@@ -71,7 +71,7 @@ if command -v "$BINARY" &>/dev/null; then
   REMOTE_VERSION="${VERSION#v}"
   if [ "$CURRENT_VERSION" = "$REMOTE_VERSION" ]; then
     echo ""
-    echo -e "${GREEN}${BOLD}✓ ChumaClaw ${VERSION} is already installed and up to date.${RESET}"
+    echo -e "${GREEN}${BOLD}✓ Chuma ${VERSION} is already installed and up to date.${RESET}"
     echo -e "  ${DIM:-\033[2m}Location: $(command -v "$BINARY")${RESET}"
     echo ""
     exit 0
@@ -133,7 +133,7 @@ DIM="\033[2m"
 
 echo ""
 echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════════╗${RESET}"
-echo -e "${GREEN}${BOLD}║       ✓  ChumaClaw installed successfully!           ║${RESET}"
+echo -e "${GREEN}${BOLD}║       ✓  Chuma installed successfully!           ║${RESET}"
 echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════════╝${RESET}"
 echo ""
 echo -e "  ${DIM}Version ${RESET}   ${BOLD}${INSTALLED_VERSION}${RESET}"
