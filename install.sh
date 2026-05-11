@@ -65,6 +65,21 @@ fi
 
 echo -e "${GREEN}✔ Found version: ${VERSION}${RESET}"
 
+# ── check if already installed ─────────────────────────────────────────────
+if command -v "$BINARY" &>/dev/null; then
+  CURRENT_VERSION="$("$BINARY" --version 2>/dev/null | awk '{print $2}')"
+  REMOTE_VERSION="${VERSION#v}"
+  if [ "$CURRENT_VERSION" = "$REMOTE_VERSION" ]; then
+    echo ""
+    echo -e "${GREEN}${BOLD}✓ ChumaClaw ${VERSION} is already installed and up to date.${RESET}"
+    echo -e "  ${DIM:-\033[2m}Location: $(command -v "$BINARY")${RESET}"
+    echo ""
+    exit 0
+  else
+    echo -e "${YELLOW}▶ Upgrading ${CURRENT_VERSION} → ${REMOTE_VERSION}${RESET}"
+  fi
+fi
+
 # ── download ───────────────────────────────────────────────────────────────
 ASSET="${BINARY}-${OS_TAG}-${ARCH_TAG}-${VERSION}"
 URL="https://github.com/${REPO}/releases/download/${VERSION}/${ASSET}"
@@ -136,7 +151,7 @@ echo -e "  ${YELLOW}#${RESET} Launch an agent"
 echo -e "  ${BOLD}chuma agent \"write and test a Python web scraper\"${RESET}"
 echo ""
 echo -e "  ${YELLOW}#${RESET} Free local models — no API key needed"
-echo -e "  ${BOLD}chuma agent --provider ollama --model gemma4:31b-cloud${RESET}"
+echo -e "  ${BOLD}chuma chat --provider ollama --model gemma4:31b-cloud${RESET}"
 echo ""
 echo -e "  ${DIM}Docs & releases → https://github.com/chumaAI/chuma-code${RESET}"
 echo ""
