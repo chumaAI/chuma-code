@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Chuma installer — downloads prebuilt binary, no Rust required
 set -euo pipefail
-$Repo = "chumaAI/chuma-code"
+
 BINARY="chuma"
 REPO="chumaAI/chuma-code"
 VERSION="${CHUMA_VERSION:-latest}"
@@ -28,7 +28,6 @@ need() {
 }
 
 need curl
-need tar
 
 # ── detect OS ──────────────────────────────────────────────────────────────
 OS="$(uname -s)"
@@ -64,28 +63,25 @@ if [ "$VERSION" = "latest" ]; then
   fi
 fi
 
-echo -e "${CYAN}▶ Installing ${BINARY} ${VERSION} (${OS_TAG}/${ARCH_TAG})${RESET}"
+echo -e "${GREEN}✔ Found version: ${VERSION}${RESET}"
 
 # ── download ───────────────────────────────────────────────────────────────
-TARBALL="${BINARY}-${OS_TAG}-${ARCH_TAG}.tar.gz"
-URL="https://github.com/${REPO}/releases/download/${VERSION}/${TARBALL}"
+ASSET="${BINARY}-${OS_TAG}-${ARCH_TAG}-${VERSION}"
+URL="https://github.com/${REPO}/releases/download/${VERSION}/${ASSET}"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-echo -e "${GREEN}▶ Downloading ${URL}${RESET}"
-if ! curl -fsSL --progress-bar "$URL" -o "${TMP_DIR}/${TARBALL}"; then
+echo -e "${CYAN}▶ Downloading ${BINARY}-${OS_TAG}-${ARCH_TAG}...${RESET}"
+if ! curl -fsSL --progress-bar "$URL" -o "${TMP_DIR}/${BINARY}"; then
   echo -e "${RED}✗ Download failed.${RESET}"
   echo "  URL: $URL"
-  echo "  Check that release ${VERSION} has a ${TARBALL} asset."
+  echo "  Check that release ${VERSION} has a ${ASSET} asset."
   exit 1
 fi
 
-echo -e "${GREEN}▶ Extracting...${RESET}"
-tar -xzf "${TMP_DIR}/${TARBALL}" -C "${TMP_DIR}"
 chmod +x "${TMP_DIR}/${BINARY}"
 
 # ── install location ───────────────────────────────────────────────────────
-# Prefer ~/.local/bin (no sudo); fall back to /usr/local/bin with sudo
 if [ -n "${CHUMA_INSTALL_DIR:-}" ]; then
   INSTALL_DIR="$CHUMA_INSTALL_DIR"
 elif [ -w "/usr/local/bin" ]; then
@@ -118,9 +114,9 @@ fi
 # ── done ───────────────────────────────────────────────────────────────────
 INSTALLED_VERSION="$("$DEST" --version 2>/dev/null || echo "unknown")"
 echo ""
-echo -e "${GREEN}${BOLD}✓ Chuma installed!${RESET}"
-echo -e "  Location : $DEST"
-echo -e "  Version  : $INSTALLED_VERSION"
+echo -e "${GREEN}${BOLD}Successfully installed Chuma!${RESET}"
+echo -e "  Add ${INSTALL_DIR} to your PATH if it's not already there."
+echo -e "  Run it with: ${BOLD}${DEST}${RESET}"
 echo ""
 echo "Quick start:"
 echo "  chuma config set anthropic YOUR_API_KEY"
