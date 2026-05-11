@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Chuma installer — downloads prebuilt binary, no Rust required
 set -euo pipefail
-
+$Repo = "chumaAI/chuma-code"
 BINARY="chuma"
-REPO="chatelo/Model-Plug"
+REPO="chumaAI/chuma-code"
 VERSION="${CHUMA_VERSION:-latest}"
 
 BOLD="\033[1m"
