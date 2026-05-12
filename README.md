@@ -1,3 +1,4 @@
+![Alt text](chuma.png)
 # Chuma ⚡
 
 **Universal AI model orchestration harness.**  
