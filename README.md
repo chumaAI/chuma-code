@@ -1,5 +1,6 @@
-![Alt text](chuma.png)
 # Chuma ⚡
+
+![Alt text](chuma.png)
 
 **Universal AI model orchestration harness.**  
 Plug any model. Get tool calling, agent loops, chat, and pipelines — regardless of whether the model natively supports them.
