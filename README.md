@@ -74,6 +74,47 @@ chuma config default anthropic claude-sonnet-4-5
 # Run a prompt
 chuma run "What is the CAP theorem?"
 ```
+### Web search keys (bring your own)
+
+The `web_search` tool lets the agent look things up when its training is
+stale (new APIs, recent CHANGELOGs, error texts it hasn't seen). To get
+real Google results you need to supply your own search-provider key —
+chuma doesn't ship with one. Without a key, it falls back to
+DuckDuckGo's Instant Answer API, which rarely has hits for technical
+queries and will leave the agent flying blind.
+
+```bash
+# Recommended: Serper (Google results, free tier is 2.5k queries)
+# Get a key at https://serper.dev
+export SERPER_API_KEY=...
+
+# Fallback option: Brave Search
+# Get a key at https://brave.com/search/api
+export BRAVE_SEARCH_API_KEY=...
+```
+
+Three load paths, highest priority first:
+
+1. **Shell-exported** as above
+2. **`./.env`** in your workspace (per-project override)
+3. **`~/.config/chuma/.env`** (loaded by chuma regardless of cwd —
+   put your default keys here so any `chuma` invocation picks them up)
+
+```bash
+mkdir -p ~/.config/chuma
+cat > ~/.config/chuma/.env <<EOF
+SERPER_API_KEY=...
+EOF
+chmod 600 ~/.config/chuma/.env
+```
+
+> **Note for contributors building from source:** chuma also reads
+> `SERPER_API_KEY` / `BRAVE_SEARCH_API_KEY` at compile time via
+> `option_env!`. If those vars are set in your shell when you run
+> `cargo build --release`, the binary will bake them in as a
+> fallback. Convenient for your local dev install — but
+> **`scripts/release.sh` unsets these before building** so public
+> release binaries never carry an embedded key.
 
 ---
 
