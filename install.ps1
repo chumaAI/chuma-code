@@ -79,8 +79,9 @@ Write-Host "  Location : $Dest"
 Write-Host "  Version  : $InstalledVersion"
 Write-Host ""
 Write-Host "Quick start:"
-Write-Host "  chuma config set anthropic YOUR_API_KEY"
-Write-Host "  chuma run `"hello world`""
+Write-Host "  chuma config setup"
 Write-Host "  chuma status"
+Write-Host "  cd to your project directory"
+Write-Host "  chuma"
 
 Remove-Item -Recurse -Force $TmpDir
