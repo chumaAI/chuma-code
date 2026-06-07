@@ -132,7 +132,7 @@ echo -e "  Location : $DEST"
 echo -e "  Version  : $INSTALLED_VERSION"
 echo ""
 echo "Quick start:"
-echo "  chuma config setup"
+echo "  chuma config setup" #— prompts for providers setup, including API keys if needed
 echo "  chuma status"
 echo "  cd to your project directory"
 echo "  chuma"

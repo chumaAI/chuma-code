@@ -79,8 +79,8 @@ Write-Host "  Location : $Dest"
 Write-Host "  Version  : $InstalledVersion"
 Write-Host ""
 Write-Host "Quick start:"
-Write-Host "  chuma config setup"
-Write-Host "  chuma status"
+Write-Host "  chuma config setup" -ForegroundColor Cyan #— prompts for providers setup, including API keys if needed
+Write-Host "  chuma status" -ForegroundColor Cyan
 Write-Host "  cd to your project directory"
 Write-Host "  chuma"
 
