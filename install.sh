@@ -3,7 +3,12 @@
 set -euo pipefail
 
 BINARY="chuma"
-REPO="chumaAI/chuma-code"
+# Public release repo (release.yml in chatelo/Model-Plug pushes the
+# built artifacts here via `repository: chumaAI/chuma-code`). Users
+# `curl` install.sh from this same repo, so the resolution stays
+# self-consistent — `latest` and the per-version asset URL both come
+# from the same place.
+REPO="${CHUMA_REPO:-chumaAI/chuma-code}"
 VERSION="${CHUMA_VERSION:-latest}"
 
 BOLD="\033[1m"
@@ -28,6 +33,7 @@ need() {
 }
 
 need curl
+need tar
 
 # ── detect OS ──────────────────────────────────────────────────────────────
 OS="$(uname -s)"
@@ -63,40 +69,32 @@ if [ "$VERSION" = "latest" ]; then
   fi
 fi
 
-echo -e "${GREEN}✔ Found version: ${VERSION}${RESET}"
-
-# ── check if already installed ─────────────────────────────────────────────
-if command -v "$BINARY" &>/dev/null; then
-  CURRENT_VERSION="$("$BINARY" --version 2>/dev/null | awk '{print $2}')"
-  REMOTE_VERSION="${VERSION#v}"
-  if [ "$CURRENT_VERSION" = "$REMOTE_VERSION" ]; then
-    echo ""
-    echo -e "${GREEN}${BOLD}✓ Chuma ${VERSION} is already installed and up to date.${RESET}"
-    echo -e "  ${DIM:-\033[2m}Location: $(command -v "$BINARY")${RESET}"
-    echo ""
-    exit 0
-  else
-    echo -e "${YELLOW}▶ Upgrading ${CURRENT_VERSION} → ${REMOTE_VERSION}${RESET}"
-  fi
-fi
+echo -e "${CYAN}▶ Installing ${BINARY} ${VERSION} (${OS_TAG}/${ARCH_TAG})${RESET}"
 
 # ── download ───────────────────────────────────────────────────────────────
-ASSET="${BINARY}-${OS_TAG}-${ARCH_TAG}-${VERSION}"
-URL="https://github.com/${REPO}/releases/download/${VERSION}/${ASSET}"
+# Asset shape produced by .github/workflows/release.yml:
+#   chuma-<os>-<arch>-v<VERSION>.tar.gz   (Linux / macOS)
+#   chuma-windows-<arch>-v<VERSION>.zip   (Windows; not handled here)
+# Keep this in lockstep with that matrix.
+TARBALL="${BINARY}-${OS_TAG}-${ARCH_TAG}-${VERSION}.tar.gz"
+URL="https://github.com/${REPO}/releases/download/${VERSION}/${TARBALL}"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-echo -e "${CYAN}▶ Downloading ${BINARY}-${OS_TAG}-${ARCH_TAG}...${RESET}"
-if ! curl -fsSL --progress-bar "$URL" -o "${TMP_DIR}/${BINARY}"; then
+echo -e "${GREEN}▶ Downloading ${URL}${RESET}"
+if ! curl -fsSL --progress-bar "$URL" -o "${TMP_DIR}/${TARBALL}"; then
   echo -e "${RED}✗ Download failed.${RESET}"
   echo "  URL: $URL"
-  echo "  Check that release ${VERSION} has a ${ASSET} asset."
+  echo "  Check that release ${VERSION} has a ${TARBALL} asset."
   exit 1
 fi
 
+echo -e "${GREEN}▶ Extracting...${RESET}"
+tar -xzf "${TMP_DIR}/${TARBALL}" -C "${TMP_DIR}"
 chmod +x "${TMP_DIR}/${BINARY}"
 
 # ── install location ───────────────────────────────────────────────────────
+# Prefer ~/.local/bin (no sudo); fall back to /usr/local/bin with sudo
 if [ -n "${CHUMA_INSTALL_DIR:-}" ]; then
   INSTALL_DIR="$CHUMA_INSTALL_DIR"
 elif [ -w "/usr/local/bin" ]; then
@@ -128,28 +126,12 @@ fi
 
 # ── done ───────────────────────────────────────────────────────────────────
 INSTALLED_VERSION="$("$DEST" --version 2>/dev/null || echo "unknown")"
-PURPLE="\033[35m"
-DIM="\033[2m"
-
 echo ""
-echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════════╗${RESET}"
-echo -e "${GREEN}${BOLD}║       ✓  Chuma installed successfully!           ║${RESET}"
-echo -e "${GREEN}${BOLD}╚══════════════════════════════════════════════════════╝${RESET}"
+echo -e "${GREEN}${BOLD}✓ Chuma installed!${RESET}"
+echo -e "  Location : $DEST"
+echo -e "  Version  : $INSTALLED_VERSION"
 echo ""
-echo -e "  ${DIM}Version ${RESET}   ${BOLD}${INSTALLED_VERSION}${RESET}"
-echo -e "  ${DIM}Location${RESET}   ${CYAN}${DEST}${RESET}"
-echo ""
-echo -e "${PURPLE}${BOLD}  ──────────────────  Quick Start  ──────────────────${RESET}"
-echo ""
-echo -e "  ${YELLOW}#${RESET} Set your API key"
-echo -e "  ${BOLD}chuma config set anthropic YOUR_API_KEY${RESET}"
-
-echo ""
-echo -e "  ${YELLOW}#${RESET} Launch an agent"
-echo -e "  ${BOLD}chuma agent \"write and test a Python web scraper\"${RESET}"
-echo ""
-echo -e "  ${YELLOW}#${RESET} Free local models — no API key needed"
-echo -e "  ${BOLD}chuma agent --provider ollama --model gemma4:31b-cloud${RESET}"
-echo ""
-echo -e "  ${DIM}Docs & releases → https://github.com/chumaAI/chuma-code${RESET}"
-echo ""
+echo "Quick start:"
+echo "  chuma config set anthropic YOUR_API_KEY"
+echo "  chuma run \"hello world\""
+echo "  chuma status"

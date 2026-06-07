@@ -1,4 +1,6 @@
 # Chuma Windows installer
+# Usage: iwr https://raw.githubusercontent.com/Chatelo/Model-Plug/main/scripts/install.ps1 | iex
+#        or: $env:CHUMA_VERSION="0.9.0"; iwr ... | iex
 
 $ErrorActionPreference = "Stop"
 
@@ -29,7 +31,10 @@ if ($Version -eq "latest") {
 Write-Host "▶ Installing $Binary $Version (windows/$Arch)" -ForegroundColor Cyan
 
 # ── download ─────────────────────────────────────────────────────────────────
-$Zip     = "$Binary-windows-$Arch.zip"
+# Asset shape produced by .github/workflows/release.yml (Windows arm):
+#   chuma-windows-<arch>-v<VERSION>.zip
+# Keep in lockstep with that matrix.
+$Zip     = "$Binary-windows-$Arch-$Version.zip"
 $Url     = "https://github.com/$Repo/releases/download/$Version/$Zip"
 $TmpDir  = Join-Path $env:TEMP "chuma-install-$(Get-Random)"
 New-Item -ItemType Directory -Path $TmpDir | Out-Null
