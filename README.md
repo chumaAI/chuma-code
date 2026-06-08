@@ -2,7 +2,7 @@
 
 ![Alt text](chuma.png)
 
-**Universal AI model orchestration harness.**  
+**Universal AI model orchestration harness.**
 Plug any model. Get tool calling, agent loops, chat, and pipelines — regardless of whether the model natively supports them.
 
 ```
@@ -31,6 +31,9 @@ cat report.txt | chuma pipe -t "summarise in 3 bullet points"
 ### Linux / macOS
 
 ```bash
+# On Linux (Debian/Ubuntu), update your package list first
+sudo apt update
+
 curl -sSL https://raw.githubusercontent.com/chumaAI/chuma-code/main/install.sh | bash
 ```
 
